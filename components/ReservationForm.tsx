@@ -1,54 +1,51 @@
 import { Col, DatePicker, Form, Input, Select } from 'antd';
-import React, { useState } from 'react';
+import dayjs from 'dayjs';
+import { useState } from 'react';
 
 const { Option } = Select;
 
-interface DataNodeType {
-  value: string;
-  label: string;
-  children?: DataNodeType[];
-}
-
-const ReservationForm = ({ roomTypes }: any) => {
-  const [rate, setRate] = useState([]);
-  const [reservationSuccess, setReservationSuccess] = useState(false);
-  const [newReservationId, setNewReservationId] = useState();
-
+const ReservationForm = ({ roomTypes, form }: any) => {
+  const [from, to] = form.getFieldValue('dateRange') || [];
+  const [numOfNights, setNumOfNights] = useState(dayjs(to).diff(dayjs(from), 'day'));
   return (
     <Col>
-      <Form.Item name="dateRange" label="Date range">
-        <DatePicker.RangePicker />
+      <Form.Item name="dateRange" label="Khoảng ngày" required>
+        <DatePicker.RangePicker
+          placeholder={['Ngày đến', 'Ngày đi']}
+          onChange={(_, [from, to]) => setNumOfNights(dayjs(to).diff(dayjs(from), 'day'))}
+        />
       </Form.Item>
-      <Form.Item
-        name="nights"
-        label="Total nights"
-        required
-      >
-        <Input readOnly disabled />
+      <Form.Item label="Số đêm">
+        <Input value={numOfNights} readOnly disabled />
       </Form.Item>
       <Form.Item
         name="numRooms"
-        label="Rooms"
+        label="Số lượng phòng"
+        required
       >
         <Input type="number" />
       </Form.Item>
       <Form.Item
+        required
         name="adults"
-        label="Adults"
+        label="Số lượng người lớn"
       >
         <Input type="number" />
       </Form.Item>
       <Form.Item
         name="roomtype"
-        label="Room type"
+        label="Kiểu phòng"
+        required
       >
         <Select
-          placeholder="Select a option and change input text above"
           allowClear
         >
           {roomTypes.map(({ room_type_id, type, rate }: any) => (
             <Option key={room_type_id} value={room_type_id}>
-              {type} - {rate}
+              {type} - {parseFloat(rate).toLocaleString('it-IT', {
+              style: 'currency',
+              currency: 'VND',
+            })}
             </Option>
           ))}
         </Select>

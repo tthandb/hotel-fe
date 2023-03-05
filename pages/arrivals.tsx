@@ -1,11 +1,12 @@
 import React, { ReactElement, useState } from 'react';
 import LayoutWithSidebar from 'components/layouts/LayoutWithSidebar';
-import { Button, DatePicker, DatePickerProps, Select, Space, Table, Tag, Typography } from 'antd';
+import { Button, Card, DatePicker, DatePickerProps, Select, Space, Table, Tag } from 'antd';
 import dayjs from 'dayjs';
 import { SearchOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table';
 import { getArrivalsNew, updateRoomCheckin } from '../apis';
 import PendingDeparturesTable from '../components/PendingDeparturesTable';
+import Link from 'next/link';
 
 const { Option } = Select;
 
@@ -27,22 +28,22 @@ interface DataType {
 
 let columns: ColumnsType<DataType> = [
   {
-    title: 'Name',
+    title: 'Tên',
     dataIndex: 'name',
     key: 'name',
   },
   {
-    title: 'Check in date',
+    title: 'Ngày check-in',
     dataIndex: 'check_in_date',
     key: 'check_in_date',
   },
   {
-    title: 'Check-out date',
+    title: 'Ngày check-out',
     dataIndex: 'check_out_date',
     key: 'check_out_date',
   },
   {
-    title: 'Room Type',
+    title: 'Kiểu phòng',
     key: 'type',
     dataIndex: 'type',
     render: (_, { type }) => (
@@ -57,11 +58,9 @@ const Arrivals = () => {
   const [criteria, setCriteria] = useState({
     firstname: '',
     lastname: '',
-    sdate: '2020-10-20',
-    edate: '2020-10-21',
     resRooms: [],
     reservationChosen: false,
-    startDateRange: '2020-10-22',
+    startDateRange: dayjs().format('YYYY-MM-DD'),
     chosenReservationId: '',
     arrivalsArray: [],
     roomsArray: [],
@@ -86,21 +85,21 @@ const Arrivals = () => {
   }
 
   columns[4] = {
-    title: 'Room Number',
+    title: 'Số phòng',
     key: 'room_num',
     dataIndex: 'room_num',
     render: (value: any, record: DataType) => {
-      if (criteria.startDateRange !== today) return <div>Not set</div>
-      if (record.room_num !== 'Not Set') return <div>{record.room_num}</div>
+      if (criteria.startDateRange !== today) return <div>Chưa gán</div>
+      if (record.room_num !== 'Chưa gán') return <div>{record.room_num}</div>
       return (
         <Select defaultValue={record['room_num']} onChange={value => onSelectChange(value, record)}>
           {rooms.filter((roomType: any) => roomType?.occupied === 0
             && roomType?.room_type_id === record.res_room_id,
-            ).map((room: any) => (
+          ).map((room: any) => (
             <Option key={room.room_id} value={room.room_id}>
-          {room.room_num}{' '} {room.clean === 0 && ' (dirty)'}
+              {room.room_num}{' '} {room.clean === 0 && ' (bẩn)'}
             </Option>
-            ))}
+          ))}
         </Select>
       )
     },
@@ -112,7 +111,7 @@ const Arrivals = () => {
       <Button onClick={() => onCheckin(record.res_room_id, record.selectedRoom)}>
         Check In
       </Button>
-    ) : 'Checked In',
+    ) : 'Đã check-in',
   }
 
   const onSubmit = async () => {
@@ -132,20 +131,27 @@ const Arrivals = () => {
   };
 
   return (
-    <Space direction="vertical">
-      <Typography.Title>Arrivals</Typography.Title>
-      <span><a>Pending departures</a> by room type:</span>
-      {pendingDepartures.length === 0 ? ' None' : <PendingDeparturesTable dataSource={pendingDepartures} />}
-      <DatePicker
-        defaultValue={dayjs(criteria.startDateRange)}
-        format={'YYYY-MM-DD'}
-        onChange={onChange}
-      />
-      <Button icon={<SearchOutlined />} onClick={onSubmit}>
-        Search
-      </Button>
-      <Table columns={columns} dataSource={arrivals} />
-    </Space>
+    <Card title="Danh sách khách đến">
+      <Space direction="vertical">
+        <Space>
+          <DatePicker
+            defaultValue={dayjs(criteria.startDateRange)}
+            format={'YYYY-MM-DD'}
+            onChange={onChange}
+          />
+          <Button icon={<SearchOutlined />} onClick={onSubmit}>
+            Tìm kiếm
+          </Button>
+        </Space>
+        <Space size="large">
+          <Table columns={columns} dataSource={arrivals} bordered />
+          <div>
+            <span><Link href="/billing">Lượng khách hàng sắp rời đi</Link> trong từng loại phòng:</span>
+            {pendingDepartures.length === 0 ? ' Không có' : <PendingDeparturesTable dataSource={pendingDepartures} />}
+          </div>
+        </Space>
+      </Space>
+    </Card>
   );
 };
 

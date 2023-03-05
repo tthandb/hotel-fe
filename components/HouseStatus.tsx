@@ -10,31 +10,17 @@ const columns = [
     key: 'name',
   },
   {
-    title: 'Vacant',
+    title: 'Bỏ không',
     dataIndex: 'vacant',
     key: 'vacant',
   },
   {
-    title: 'Occupied',
+    title: 'Có khách',
     dataIndex: 'occupied',
     key: 'occupied',
   },
 ];
 
-const data = [
-  {
-    key: '1',
-    name: 'Clean',
-    vacant: 3,
-    occupied: 1,
-  },
-  {
-    key: '1',
-    name: 'Dirty',
-    vacant: 33,
-    occupied: 1,
-  },
-];
 export default function HouseStatus() {
   const [date, setDate] = useState(dayjs());
   const [state, setState] = useState({
@@ -79,13 +65,13 @@ export default function HouseStatus() {
     setRoomStatus([
       {
         key: '1',
-        name: 'Clean',
+        name: 'Sạch',
         vacant: rooms[0].cleanVacant,
         occupied: rooms[0].cleanOccupied,
       },
       {
         key: '2',
-        name: 'Dirty',
+        name: 'Bẩn',
         vacant: rooms[0].dirtyVacant,
         occupied: rooms[0].dirtyOccupied,
       },
@@ -104,38 +90,38 @@ export default function HouseStatus() {
   return (
     <Card
       style={{ width: '100%' }}
-      title="House status"
+      title="Số liệu chung"
       extra={<DatePicker defaultValue={date} onChange={handleChange} />}
     >
-      <Row gutter={16}>
+      <Row gutter={20}>
         <Col span={8}>
-          <Descriptions title="Room Summary" bordered>
-            <Descriptions.Item span={6} label="Total Rooms to Sell">{state.roomsToSell}</Descriptions.Item>
-            <Descriptions.Item span={6} label="Min. Available Tonight"> {state.minAvailableTonight}</Descriptions.Item>
-            <Descriptions.Item span={6} label="Max. Occupied Tonight">  {state.maxOccupiedTonight}</Descriptions.Item>
+          <Descriptions title="Tổng số phòng" bordered>
+            <Descriptions.Item span={6} label="Tổng số phòng để cho thuê">{state.roomsToSell}</Descriptions.Item>
+            <Descriptions.Item span={6} label="Số phòng có sẵn tối thiểu"> {state.minAvailableTonight}</Descriptions.Item>
+            <Descriptions.Item span={6} label="Số phòng đã cho thuê tối đa">  {state.maxOccupiedTonight}</Descriptions.Item>
           </Descriptions>
         </Col>
         <Col span={8}>
-          <Descriptions title="Activity" bordered>
-            <Descriptions.Item span={6} label="Stayovers">{state.stayovers}</Descriptions.Item>
-            <Descriptions.Item span={6} label="Departures Pending"> {state.departuresPending}</Descriptions.Item>
-            <Descriptions.Item span={6} label="Departures Actual">  {state.departuresActual}</Descriptions.Item>
-            <Descriptions.Item span={6} label="Arrivals Pending"> {state.arrivalsPending}</Descriptions.Item>
-            <Descriptions.Item span={6} label="Arrivals Actual">{state.arrivalsActual}</Descriptions.Item>
+          <Descriptions title="Hoạt động" bordered>
+            <Descriptions.Item span={6} label="Số lượng ở lại thêm">{state.stayovers}</Descriptions.Item>
+            <Descriptions.Item span={6} label="Khách hàng sắp rời khách sạn"> {state.departuresPending}</Descriptions.Item>
+            <Descriptions.Item span={6} label="Khách hàng đã rời khách sạn">  {state.departuresActual}</Descriptions.Item>
+            <Descriptions.Item span={6} label="Khách hàng sắp đến khách sạn"> {state.arrivalsPending}</Descriptions.Item>
+            <Descriptions.Item span={6} label="Khách hàng đã đến khách sạn">{state.arrivalsActual}</Descriptions.Item>
           </Descriptions>
         </Col>
       </Row>
       <Row gutter={16}>
         <Col span={8}>
           <Table
-            caption={<Typography.Title level={5}>Room Status-Housekeeping</Typography.Title>}
+            bordered
+            caption={<Typography.Title level={5}>Bảng số liệu phòng</Typography.Title>}
             columns={columns}
-            dataSource={roomStatus} pagination={false}
+            dataSource={roomStatus}
+            pagination={false}
           />
         </Col>
       </Row>
-
     </Card>
-
   )
 }

@@ -199,7 +199,6 @@ export const getPreInvoice = (id: any) => {
   return axios
     .get(`/invoice/preInvoice/${id}`)
     .then(res => {
-      console.log(res)
       return res.data
     })
     .catch((error) => {

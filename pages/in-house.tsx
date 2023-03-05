@@ -1,6 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 import LayoutWithSidebar from 'components/layouts/LayoutWithSidebar';
-import { Button, Form, Input, Space, Table, Tag } from 'antd';
+import { Button, Card, Form, Input, Space, Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { getGuests } from '../apis';
 import Link from 'next/link';
@@ -21,27 +21,27 @@ interface DataType {
 
 const columns: ColumnsType<DataType> = [
   {
-    title: 'First Name',
+    title: 'Tên',
     dataIndex: 'first_name',
     key: 'first_name',
   },
   {
-    title: 'Last Name',
+    title: 'Họ',
     dataIndex: 'last_name',
     key: 'last_name',
   },
   {
-    title: 'Arrival Date',
+    title: 'Ngày đến',
     dataIndex: 'check_in_date',
     key: 'check_in_date',
   },
   {
-    title: 'Departure date',
+    title: 'Ngày đi',
     dataIndex: 'check_out_date',
     key: 'check_out_date',
   },
   {
-    title: 'Room Type',
+    title: 'Kiểu phòng',
     key: 'type',
     dataIndex: 'type',
     render: (_, { type }) => (
@@ -51,17 +51,17 @@ const columns: ColumnsType<DataType> = [
     ),
   },
   {
-    title: 'Room Number',
+    title: 'Số phòng',
     key: 'room_num',
     dataIndex: 'room_num',
   },
   {
-    title: 'Action',
+    title: 'Thao tác',
     key: 'action',
     render: (_, record) => (
       <Space size="middle">
         <Link href={`/reservations/${record.reservation_id}`}>
-          Update
+          Cập nhật
         </Link>
       </Space>
     ),
@@ -95,41 +95,41 @@ const InHouse = () => {
     }
   }
   return (
-    <div>
+    <Card title="Khách đang lưu trú">
       <Form
         {...formItemLayout}
         form={form}
         onFinish={onFinish}
         initialValues={{}}
-        style={{ maxWidth: 1000 }}
+        style={{ maxWidth: 300 }}
         scrollToFirstError
       >
         <Form.Item
           name="roomNumber"
-          label="Room Number"
+          label="Số phòng"
         >
           <Input type="number" />
         </Form.Item>
         <Form.Item
           name="firstname"
-          label="First Name"
+          label="Tên"
         >
           <Input />
         </Form.Item>
         <Form.Item
           name="lastname"
-          label="Last Name"
+          label="Họ"
         >
           <Input />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">
-            Search
+            Tìm kiếm
           </Button>
         </Form.Item>
       </Form>
-      <Table columns={columns} dataSource={guests} />
-    </div>
+      <Table columns={columns} dataSource={guests} bordered/>
+    </Card>
   );
 }
 

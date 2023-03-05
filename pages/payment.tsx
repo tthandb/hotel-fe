@@ -1,11 +1,8 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import LayoutWithSidebar from 'components/layouts/LayoutWithSidebar';
-import { Button, Table } from 'antd';
+import { Button, Card, message, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { getInvoice, getPreInvoice, updateRoomCheckout } from '../apis';
-import toast from 'react-hot-toast';
-import { useRole } from '@floating-ui/react-dom-interactions';
-import { useRouter } from 'next/router';
 import dayjs from 'dayjs';
 import { CheckCircleFilled } from '@ant-design/icons';
 
@@ -31,47 +28,46 @@ const Payment = ({ invoices, paid, room_num, res_room_id }: any) => {
   const [isPaid, setPaid] = useState(paid);
   let columns: ColumnsType<DataType> = [
     {
-      title: 'Room Number',
+      title: 'Số phòng',
       key: 'room_num',
       render: () => room_num,
     },
     {
-      title: 'First Name',
+      title: 'Tên',
       dataIndex: 'first_name',
       key: 'first_name',
     },
     {
-      title: 'Last Name',
+      title: 'Họ',
       dataIndex: 'last_name',
       key: 'last_name',
     },
     {
-      title: 'Checked In Date',
+      title: 'Ngày check-in',
       key: 'check_in_date',
       render: (_, record) => dayjs(record.check_in_date).format('YYYY-MM-DD'),
     },
     {
-      title: 'Check Out Date',
+      title: 'Ngày check-out',
       key: 'check_out_date',
       render: (_, record) => dayjs(record.check_out_date).format('YYYY-MM-DD'),
     },
     {
-      title: 'Payment Type',
-      dataIndex: 'payment_type',
-      key: 'payment_type',
-    },
-    {
-      title: 'Num nights',
+      title: 'Số đêm',
       dataIndex: 'num_days',
       key: 'num_days',
     },
     {
-      title: 'Rate',
+      title: 'Giá phòng',
       dataIndex: 'rate',
       key: 'rate',
+      render: (_, { rate }) => parseFloat(rate).toLocaleString('it-IT', {
+        style: 'currency',
+        currency: 'VND',
+      }),
     },
     {
-      title: 'Room Total',
+      title: 'Tổng giá tiền',
       key: 'room_total',
       render: (_, record) => (parseInt(record.num_days) * parseFloat(record.rate)).toLocaleString('it-IT', {
         style: 'currency',
@@ -84,24 +80,23 @@ const Payment = ({ invoices, paid, room_num, res_room_id }: any) => {
       const data = await updateRoomCheckout(res_room_id, room_num, 'Cash');
       if (data) {
         setPaid(true);
-        toast.success('payment successfully');
+        message.success('payment successfully');
       }
     } catch (e: any) {
-      toast.error(e.message);
+      message.error(e.message);
     }
   }
   return (
-    <div>
-      INVOICE
+    <Card title="Hóa đơn">
       <Table columns={columns} dataSource={invoices} />
       {!isPaid ?
         <Button onClick={() => onSubmitPayment()}>
-          Submit Payment
+          Gửi thanh toán
         </Button> : (
           <CheckCircleFilled style={{ fontSize: '60px', color: '#52c41a' }} />
         )
       }
-    </div>
+    </Card>
   );
 }
 
@@ -112,7 +107,6 @@ export async function getServerSideProps(context: any) {
     invoices = await getInvoice(invoice_id);
   } else if (res_room_id) {
     invoices = await getPreInvoice(res_room_id)
-    console.log(invoices)
   }
   return {
     props: {

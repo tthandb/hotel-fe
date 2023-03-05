@@ -11,19 +11,19 @@ interface DataType {
 
 const columns: ColumnsType<DataType> = [
   {
-    title: 'Room Type',
+    title: 'Kiểu phòng',
     dataIndex: 'type',
     key: 'type',
   },
   {
-    title: 'Pending Departures',
+    title: 'Khách đang chờ',
     dataIndex: 'pending_departures',
     key: 'pending_departures',
   },
 ];
 const PendingDeparturesTable = ({ dataSource }: { dataSource: any }) => {
   return (
-    <Table columns={columns} dataSource={dataSource} pagination={false}/>
+    <Table columns={columns} dataSource={dataSource} pagination={false} bordered/>
   )
 }
 

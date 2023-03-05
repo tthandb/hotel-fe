@@ -15,7 +15,17 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 }
 
-const protectedRoutes = ['/'];
+const protectedRoutes = [
+  '/',
+  '/reservations',
+  '/arrivals',
+  '/billing',
+  '/house-status',
+  '/housekeeping',
+  '/in-house',
+  'maintenance',
+  '/payment',
+];
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const router = useRouter();
@@ -23,14 +33,13 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   return (
     <AuthProvider>
       {getLayout(
-        // protectedRoutes.includes(router.pathname) ? (
-        //   <ProtectedRoute>
-        //     <Component {...pageProps} />
-        //   </ProtectedRoute>
-        // ) : (
-        //   <Component {...pageProps} />
-        // ),
-        <Component {...pageProps} />,
+        protectedRoutes.includes(router.pathname) ? (
+          <ProtectedRoute>
+            <Component {...pageProps} />
+          </ProtectedRoute>
+        ) : (
+          <Component {...pageProps} />
+        ),
       )}
     </AuthProvider>
   )

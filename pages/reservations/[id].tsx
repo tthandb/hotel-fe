@@ -1,20 +1,11 @@
 import React, { ReactElement } from 'react';
-import ReservationForm from '../../components/ReservationForm';
-import { Button, Form, Typography } from 'antd';
+import ReservationForm from 'components/ReservationForm';
+import { Button, Card, Form, message } from 'antd';
 import InformationForm from '../../components/InformationForm';
-import { getReservation, getRoomTypes, updateReservation } from '../../apis';
+import { createReservation, getReservation, getRoomTypes, updateReservation } from '../../apis';
 import LayoutWithSidebar from '../../components/layouts/LayoutWithSidebar';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
-
-const { Title } = Typography;
-
-
-interface DataNodeType {
-  value: string;
-  label: string;
-  children?: DataNodeType[];
-}
 
 const formItemLayout = {
   labelCol: {
@@ -50,23 +41,31 @@ const ReservationFormPage = ({ roomTypes, formValues, isUpdate, customerId }: an
       roomtype: values.roomtype,
       resRoomId: values.resRoomId,
       comments: values.comments,
-      rate: values.rate,
+      rate: roomTypes.find((room: any) => room.room_type_id === values.roomtype)?.rate,
       user_id: 1,
     }
     try {
-      const data = await updateReservation(payload);
-      if (data) {
-        router.push('/reservations');
+      if (isUpdate) {
+        const data = await updateReservation(payload);
+        if (data) {
+          message.success('Cập nhật thông tin thành công!')
+          router.push('/reservations');
+        }
+      } else {
+        const data = await createReservation(payload);
+        if (data) {
+          message.success('Tạo mới thông tin thành công!')
+          router.push('/reservations');
+        }
       }
-    } catch (e) {
+    } catch (e: any) {
+      message.success('Có lỗi xảy ra: ' + e.message)
       console.error(e);
     }
   };
 
   return (
-    <div>
-      <Title>Reservation Form</Title>
-
+    <Card title={isUpdate ? 'Chỉnh sửa thông tin đặt phòng' : 'Thêm mới thông tin đặt phòng'}>
       <Form
         {...formItemLayout}
         form={form}
@@ -76,15 +75,15 @@ const ReservationFormPage = ({ roomTypes, formValues, isUpdate, customerId }: an
         style={{ maxWidth: 600 }}
         scrollToFirstError
       >
-        <ReservationForm roomTypes={roomTypes} />
+        <ReservationForm form={form} roomTypes={roomTypes} />
         <InformationForm />
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">
-            Submit
+            Gửi
           </Button>
         </Form.Item>
       </Form>
-    </div>
+    </Card>
   );
 };
 
@@ -138,8 +137,8 @@ export async function getServerSideProps(context: any) {
       email: '',
       address: '',
       city: '',
-      departuredate: '10-12-2020',
-      arrivaldate: '10-12-2021',
+      departuredate: '',
+      arrivaldate: '',
       nights: '',
       adults: 1,
       numRooms: 1,

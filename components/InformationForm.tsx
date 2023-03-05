@@ -6,20 +6,23 @@ const InformationForm = () => {
   return (
     <div>
       <Form.Item
-        name="firstname"
-        label="First name"
+        name="lastname"
+        label="Họ và tên đệm"
+        required
       >
         <Input />
       </Form.Item>
       <Form.Item
-        name="lastname"
-        label="Last name"
+        name="firstname"
+        label="Tên"
+        required
       >
         <Input />
       </Form.Item>
       <Form.Item
         name="phone"
-        label="Phone Number"
+        label="Số điện thoại"
+        required
       >
         <PatternFormat
           customInput={Input}
@@ -36,25 +39,27 @@ const InformationForm = () => {
       </Form.Item>
       <Form.Item
         name="address"
-        label="Street"
+        label="Địa chỉ (tên đường)"
       >
         <Input />
       </Form.Item>
       <Form.Item
         name="city"
-        label="City"
+        label="Thành phố"
+        required
       >
         <Input />
       </Form.Item>
       <Form.Item
         name="country"
-        label="Country"
+        label="Quốc gia"
+        required
       >
         <Input />
       </Form.Item>
       <Form.Item
         name="room_comments"
-        label="Comments"
+        label="Ghi chú"
       >
         <Input.TextArea showCount maxLength={100} />
       </Form.Item>

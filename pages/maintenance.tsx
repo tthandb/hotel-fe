@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import LayoutWithSidebar from 'components/layouts/LayoutWithSidebar';
 import { ColumnsType } from 'antd/es/table';
-import { Button, DatePicker, Form, Input, Modal, Table } from 'antd';
+import { Button, Card, DatePicker, Form, Input, Modal, Space, Table } from 'antd';
 import { createRoomIssue, getRoomIssues, getRoomsIdNum, updateRoomIssues, updateRoomIssuesFixed } from '../apis';
 import dayjs from 'dayjs';
 
@@ -62,19 +62,21 @@ const Maintenance = ({ rooms }: any) => {
   columns[5] = {
     key: 'action',
     render: (_, record) => (
-      <>
-        <Button onClick={() => {
-          console.log(record)
-
-          form.setFieldsValue({
-            roomNumber: record.room_num,
-            issue: record.issue,
-            dateRange: [dayjs(record.start_date), dayjs(record.end_date)],
-          });
-          showModal(record.room_issue_id)
-        }}>Update</Button>
+      <Space>
+        <Button
+          onClick={() => {
+            form.setFieldsValue({
+              roomNumber: record.room_num,
+              issue: record.issue,
+              dateRange: [dayjs(record.start_date), dayjs(record.end_date)],
+            });
+            showModal(record.room_issue_id)
+          }}
+        >
+          Update
+        </Button>
         <Button onClick={() => updateFixedRoom(record.room_issue_id)}>Fixed</Button>
-      </>
+      </Space>
     ),
   }
 
@@ -134,12 +136,12 @@ const Maintenance = ({ rooms }: any) => {
   }, [])
 
   return (
-    <div>
-      maintenance
+    <Card title="Bảo trì phòng ốc" extra={
       <Button type="primary" onClick={() => showModal(0)}>
-        Open Modal
+        Thêm
       </Button>
-      <Modal title="Basic Modal" open={isModalOpen} onOk={form.submit} onCancel={handleCancel}>
+    }>
+      <Modal title="Add" open={isModalOpen} onOk={form.submit} onCancel={handleCancel}>
         <Form
           form={form}
           onFinish={onFinish}
@@ -165,7 +167,7 @@ const Maintenance = ({ rooms }: any) => {
         </Form>
       </Modal>
       <Table columns={columns} dataSource={issues} />
-    </div>
+    </Card>
   )
     ;
 };

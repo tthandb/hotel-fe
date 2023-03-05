@@ -24,32 +24,27 @@ interface DataType {
 
 let columns: ColumnsType<DataType> = [
   {
-    title: 'Room Number',
+    title: 'Số phòng',
     key: 'room_num',
     dataIndex: 'room_num',
   },
   {
-    title: 'First Name',
-    dataIndex: 'first_name',
+    title: 'Họ và tên',
+    dataIndex: 'name',
     key: 'first_name',
   },
   {
-    title: 'Last Name',
-    dataIndex: 'last_name',
-    key: 'last_name',
-  },
-  {
-    title: 'Arrival Date',
+    title: 'Ngày đến',
     dataIndex: 'check_in_date',
     key: 'check_in_date',
   },
   {
-    title: 'Departure date',
+    title: 'Ngày đi',
     dataIndex: 'check_out_date',
     key: 'check_out_date',
   },
   {
-    title: 'Balance',
+    title: 'Tổng chi phí',
     key: 'balance',
     render: (_, record) => {
       const a = Number(record.num_days * record.rate)
@@ -73,9 +68,9 @@ const formItemLayout = {
 };
 
 const options = [
-  { value: 'stayOver', label: 'Stay Over' },
-  { value: 'dueOut', label: 'Due Out' },
-  { value: 'checkedOut', label: 'Checked Out' },
+  { value: 'stayOver', label: 'Ở lại thêm' },
+  { value: 'dueOut', label: 'Đến hạn trả phòng' },
+  { value: 'checkedOut', label: 'Đã check-out' },
 ];
 
 const Billing = () => {
@@ -100,13 +95,13 @@ const Billing = () => {
   }
 
   columns[5] = {
-    title: 'Action',
+    title: 'Thao tác',
     key: 'action',
     render: (_, record) => {
       if (record.checked_out === 0) return (
         <Button onClick={() => onCheckOut(record.res_room_id, record.room_num)}>Check Out</Button>
       )
-      return <Button onClick={() => onLinkInvoice(record.res_room_id, record.room_num)}>Invoice</Button>
+      return <Button onClick={() => onLinkInvoice(record.res_room_id, record.room_num)}>Hóa đơn</Button>
     },
   }
 
@@ -136,28 +131,28 @@ const Billing = () => {
       >
         <Form.Item
           name="roomNumber"
-          label="Room Number"
+          label="Số phòng"
         >
-          <InputNumber min="100" />
+          <InputNumber min="101" />
         </Form.Item>
         <Form.Item
           name="firstname"
-          label="First Name"
+          label="Tên"
         >
           <Input />
         </Form.Item>
         <Form.Item
           name="lastname"
-          label="Last Name"
+          label="Họ"
         >
           <Input />
         </Form.Item>
-        <Form.Item name="roomStatus" label="Room status">
+        <Form.Item name="roomStatus" label="Trạng thái phòng">
           <Radio.Group options={options} />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">
-            Search
+            Tìm kiếm
           </Button>
         </Form.Item>
       </Form>
