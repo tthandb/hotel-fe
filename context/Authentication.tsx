@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { getLoggedOut, getLoginStatus, IUser, postLogin } from '../apis/authentication';
+import { getLoggedOut, getLoginStatus, IUser, postLogin } from 'apis';
 import { useRouter } from 'next/router';
+import { message } from 'antd';
 
 export type AuthType = {
   user: {
@@ -15,13 +16,15 @@ export type AuthType = {
   loading?: boolean;
 };
 
+const initUser = {
+  access_id: 0,
+  type: 'Guest',
+  user_id: 0,
+  username: 'guest',
+}
+
 const AuthContext = createContext<AuthType>({
-  user: {
-    access_id: 0,
-    type: 'Guest',
-    user_id: 0,
-    username: 'guest',
-  },
+  user: initUser,
 });
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -32,12 +35,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     access_id: number;
     type: string;
     user_id: number;
-  }>({
-    access_id: 0,
-    type: 'Guest',
-    user_id: 0,
-    username: 'guest',
-  });
+  }>(initUser);
 
   useEffect(() => {
     getStatus();
@@ -47,9 +45,13 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const getStatus = async () => {
-    const loginStatus = await getLoginStatus();
-    if (loginStatus) {
-      setUser(loginStatus.user);
+    try {
+      const loginStatus = await getLoginStatus();
+      if (loginStatus) {
+        setUser(loginStatus.user);
+      }
+    } catch (e) {
+      setUser(initUser);
     }
   }
 
@@ -58,11 +60,15 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const login = async (userData: IUser) => {
-    const { data } = await postLogin(userData);
-    const user = data?.user
-    if (user) {
-      setUser(user)
-      router.push('/')
+    try {
+      const { data } = await postLogin(userData);
+      const user = data?.user
+      if (user) {
+        setUser(user)
+        router.push('/')
+      }
+    } catch (e: any) {
+      message.error(e?.message)
     }
   }
 

@@ -23,7 +23,7 @@ const columns: ColumnsType<DataType> = [
 ];
 const PendingDeparturesTable = ({ dataSource }: { dataSource: any }) => {
   return (
-    <Table columns={columns} dataSource={dataSource} pagination={false} bordered/>
+    <Table columns={columns} dataSource={dataSource} pagination={false} bordered rowKey={record => record.room_type_id} />
   )
 }
 

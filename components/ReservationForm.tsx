@@ -18,13 +18,13 @@ const ReservationForm = ({ roomTypes, form }: any) => {
       <Form.Item label="Số đêm">
         <Input value={numOfNights} readOnly disabled />
       </Form.Item>
-      <Form.Item
-        name="numRooms"
-        label="Số lượng phòng"
-        required
-      >
-        <Input type="number" />
-      </Form.Item>
+      {/*<Form.Item*/}
+      {/*  name="numRooms"*/}
+      {/*  label="Số lượng phòng"*/}
+      {/*  required*/}
+      {/*>*/}
+      {/*  <Input type="number" />*/}
+      {/*</Form.Item>*/}
       <Form.Item
         required
         name="adults"

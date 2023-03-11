@@ -1,9 +1,10 @@
 import React, { ReactElement, useState } from 'react';
 import LayoutWithSidebar from 'components/layouts/LayoutWithSidebar';
-import { Button, Card, Form, Input, Space, Table, Tag } from 'antd';
+import { Button, Card, Form, Input, message, Space, Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { getGuests } from '../apis';
 import Link from 'next/link';
+import dayjs from 'dayjs';
 
 interface DataType {
   key: string;
@@ -34,11 +35,19 @@ const columns: ColumnsType<DataType> = [
     title: 'Ngày đến',
     dataIndex: 'check_in_date',
     key: 'check_in_date',
+    sorter: {
+      compare: (a, b) => dayjs(a.check_in_date).diff(dayjs(b.check_in_date)),
+      multiple: 1,
+    },
   },
   {
     title: 'Ngày đi',
     dataIndex: 'check_out_date',
     key: 'check_out_date',
+    sorter: {
+      compare: (a, b) => dayjs(a.check_out_date).diff(dayjs(b.check_out_date)),
+      multiple: 1,
+    },
   },
   {
     title: 'Kiểu phòng',
@@ -54,6 +63,10 @@ const columns: ColumnsType<DataType> = [
     title: 'Số phòng',
     key: 'room_num',
     dataIndex: 'room_num',
+    sorter: {
+      compare: (a, b) => +a.room_num - +b.room_num,
+      multiple: 1,
+    },
   },
   {
     title: 'Thao tác',
@@ -80,6 +93,7 @@ const formItemLayout = {
 };
 
 const InHouse = () => {
+  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const [guests, setGuests] = useState([]);
   const onFinish = async (values: any) => {
@@ -89,9 +103,16 @@ const InHouse = () => {
       roomNumber: values.roomNumber,
       confirmationNumber: values.confirmationNumber,
     }
-    const data = await getGuests(criteria);
-    if (data) {
-      setGuests(data);
+    try {
+      setLoading(true);
+      const data = await getGuests(criteria);
+      if (data) {
+        setGuests(data);
+      }
+    } catch (e: any) {
+      message.error(e.message)
+    } finally {
+      setLoading(false);
     }
   }
   return (
@@ -103,6 +124,7 @@ const InHouse = () => {
         initialValues={{}}
         style={{ maxWidth: 300 }}
         scrollToFirstError
+        disabled={loading}
       >
         <Form.Item
           name="roomNumber"
@@ -128,7 +150,7 @@ const InHouse = () => {
           </Button>
         </Form.Item>
       </Form>
-      <Table columns={columns} dataSource={guests} bordered/>
+      <Table columns={columns} dataSource={guests} bordered loading={loading} rowKey="res_room_id" />
     </Card>
   );
 }

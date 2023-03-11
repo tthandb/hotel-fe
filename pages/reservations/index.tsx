@@ -1,6 +1,6 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import LayoutWithSidebar from 'components/layouts/LayoutWithSidebar';
-import { Button, Card, DatePicker, Space, Table, Tag } from 'antd';
+import { Button, Card, DatePicker, message, Space, Table, Tag } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { SearchOutlined } from '@ant-design/icons';
 import { getSomeReservations } from 'apis';
@@ -64,6 +64,7 @@ const columns: ColumnsType<DataType> = [
   },
 ];
 const Reservations = () => {
+  const [loading, setLoading] = useState(false);
   const [criteria, setCriteria] = useState({
     firstname: '',
     lastname: '',
@@ -73,13 +74,24 @@ const Reservations = () => {
     reservationChosen: false,
     chosenReservationId: '',
   })
-  const handleSubmit = async (event: any) => {
-    event.preventDefault();
-    const res = await getSomeReservations(criteria);
-    if (res) {
-      setCriteria({ ...criteria, resRooms: res })
+  const handleSubmit = async (event: any = null) => {
+    event?.preventDefault();
+    try {
+      setLoading(true);
+      const res = await getSomeReservations(criteria);
+      if (res) {
+        setCriteria({ ...criteria, resRooms: res })
+      }
+    } catch (e: any) {
+      message.error(e.message)
+    } finally {
+      setLoading(false);
     }
   }
+
+  useEffect(() => {
+    handleSubmit();
+  }, [])
 
   const onRangeChange = (_: null | (Dayjs | null)[], dateStrings: string[]) => {
     if (dateStrings) {
@@ -97,7 +109,7 @@ const Reservations = () => {
           />
           <Button icon={<SearchOutlined />} onClick={handleSubmit} />
         </Space>
-        <Table columns={columns} dataSource={criteria.resRooms} bordered />
+        <Table columns={columns} dataSource={criteria.resRooms} bordered loading={loading} rowKey="res_room_id" />
       </Space>
     </Card>
   );

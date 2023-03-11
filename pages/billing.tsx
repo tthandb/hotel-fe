@@ -99,7 +99,7 @@ const Billing = () => {
     key: 'action',
     render: (_, record) => {
       if (record.checked_out === 0) return (
-        <Button onClick={() => onCheckOut(record.res_room_id, record.room_num)}>Check Out</Button>
+        <Button danger onClick={() => onCheckOut(record.res_room_id, record.room_num)}>Check Out</Button>
       )
       return <Button onClick={() => onLinkInvoice(record.res_room_id, record.room_num)}>Hóa đơn</Button>
     },

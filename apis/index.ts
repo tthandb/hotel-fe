@@ -1,7 +1,6 @@
 import axios from 'axios'
 
-// axios.defaults.baseURL = 'https://hotel-be-production.up.railway.app'
-axios.defaults.baseURL = 'http://localhost:2000'
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_AXIOS_BASE_URL
 
 export const getReservation = (id: string) => {
   return axios
@@ -179,9 +178,9 @@ export const getGuests = (data: any) => {
       console.log(error)
     })
 }
-export const updateRoomCheckin = (id: any, room_id: any) => {
+export const updateRoomCheckin = (res_room_id: any, room_id: any) => {
   return axios
-    .put(`/reservationRoom/checkinRoom/${id}/${room_id}`)
+    .put(`/reservationRoom/checkinRoom/${res_room_id}/${room_id}`)
     .then(res => res)
     .catch((error) => {
       console.log(error)
@@ -313,4 +312,24 @@ export const getHouseStatus = (date: any) => {
         reservationRooms: reservationRooms.data,
       })),
     )
+}
+
+export interface IUser {
+  username: string;
+  password: string;
+}
+
+export const getLoginStatus = () => {
+  return axios.get('/login/status', { withCredentials: true })
+    .then(res => res.data)
+    .catch(err => console.log(err))
+}
+
+export const postLogin = (user: IUser) => {
+  return axios.post('/login', user, { withCredentials: true })
+}
+
+export const getLoggedOut = () => {
+  return axios.get('/logout', { withCredentials: true })
+    .catch(err => console.log(err))
 }

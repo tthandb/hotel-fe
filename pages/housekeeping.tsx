@@ -62,16 +62,13 @@ const HouseKeepingPage = () => {
     },
     {
       title: 'Trạng thái đặt phòng',
-      render: (_: any, record: any) => (record.checked_out === 1
-          ? 'Đã rời đi'
-          : record.departure
-            ? record.departure
-            : record.stayover
-              ? record.stayover
-              : record.checked_in === 1
-                ? 'Đã đến'
-                : 'Không đặt phòng'
-      ),
+      render: (_: any, record: any) => {
+        if (record.checked_out) return 'Đã rời đi';
+        if (record.dueout === 'Due Out') return 'Chuẩn bị rời đi';
+        if (record.stayover) return 'Ở lại';
+        if (record.checked_in) return 'Đã đến';
+        return 'Không đặt phòng';
+      }
     },
   ];
   const onFinish = async (values: any) => {
@@ -122,9 +119,9 @@ const HouseKeepingPage = () => {
         <Form.Item name="reservation" label="Đặt phòng">
           <Checkbox.Group options={[
             { value: 'arrived', label: 'Đã đến' },
-            { value: 'stayOver', label: 'Ở thêm' },
-            { value: 'dueOut', label: 'Đến hạn trả phòng' },
-            { value: 'departed', label: 'Đã trả phòng' },
+            { value: 'stayOver', label: 'Ở lại' },
+            { value: 'dueOut', label: 'Chuẩn bị rời đi' },
+            { value: 'departed', label: 'Đã rời đi' },
             { value: 'notReserved', label: 'Không đặt phòng' },
           ]} />
         </Form.Item>

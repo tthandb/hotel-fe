@@ -1,6 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 import LayoutWithSidebar from 'components/layouts/LayoutWithSidebar';
-import { Button, Card, message, Table } from 'antd';
+import { Button, Card, message, Space, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { getInvoice, getPreInvoice, updateRoomCheckout } from '../apis';
 import dayjs from 'dayjs';
@@ -86,16 +86,20 @@ const Payment = ({ invoices, paid, room_num, res_room_id }: any) => {
       message.error(e.message);
     }
   }
+
   return (
-    <Card title="Hóa đơn">
-      <Table columns={columns} dataSource={invoices} />
-      {!isPaid ?
-        <Button onClick={() => onSubmitPayment()}>
-          Gửi thanh toán
-        </Button> : (
-          <CheckCircleFilled style={{ fontSize: '60px', color: '#52c41a' }} />
-        )
-      }
+    <Card title="Hóa đơn" extra={<Button onClick={() => window.print()}>In hóa đơn</Button>}>
+      <Table columns={columns} dataSource={invoices} pagination={{ hideOnSinglePage: true }} />
+      <div style={{ marginTop: 20, width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+        {!isPaid ?
+          <Button type="primary" onClick={() => onSubmitPayment()}>
+            Gửi thanh toán
+          </Button>
+          : (
+            <CheckCircleFilled style={{ fontSize: '60px', color: '#52c41a' }} />
+          )
+        }
+      </div>
     </Card>
   );
 }

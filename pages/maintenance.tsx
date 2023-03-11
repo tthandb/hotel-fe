@@ -73,9 +73,9 @@ const Maintenance = ({ rooms }: any) => {
             showModal(record.room_issue_id)
           }}
         >
-          Update
+          Cập nhật
         </Button>
-        <Button onClick={() => updateFixedRoom(record.room_issue_id)}>Fixed</Button>
+        <Button onClick={() => updateFixedRoom(record.room_issue_id)}>Đã sửa</Button>
       </Space>
     ),
   }
